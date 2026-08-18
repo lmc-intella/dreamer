@@ -50,5 +50,5 @@ First release.
 - CI on push and pull request: shellcheck over every shell script and `bats
   tests/` on Ubuntu and macOS.
 
-[Unreleased]: https://github.com/linusamcm-source/mad-dreamer/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/linusamcm-source/mad-dreamer/releases/tag/v0.1.0
+[Unreleased]: https://github.com/lmc-intella/mad-dreamer/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/lmc-intella/mad-dreamer/releases/tag/v0.1.0

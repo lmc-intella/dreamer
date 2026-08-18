@@ -30,7 +30,7 @@ Needs `git`, `bash`, `python3` and `jq` on `PATH` — `gate.sh preflight` checks
 all four and names whatever is missing. `bats` and `shellcheck` are dev-only.
 
 ```sh
-git clone https://github.com/linusamcm-source/mad-dreamer.git ~/mad-dreamer
+git clone https://github.com/lmc-intella/mad-dreamer.git ~/mad-dreamer
 ```
 
 Load it per session, which is the easiest thing to undo:

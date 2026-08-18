@@ -435,7 +435,7 @@ it may outrun this file. **Not published — this is copy for review.**
 ```json
 {
   "name": "mad-dreamer",
-  "source": "https://github.com/linusamcm-source/mad-dreamer",
+  "source": "https://github.com/lmc-intella/mad-dreamer",
   "description": "Three commands — init, plan, execute — that take a goal to a merged commit. Keeps every invariant gate: plan-contract parse, adversarial stamp, findings closed at threshold, tests green, coverage met, clean-tree preflight, retention safety. Drops the process ceremony: no per-phase state machine, no ledger distillation, no integration diagram. ~269 always-on tokens; the execute flow loads one page instead of twelve.",
   "version": "0.1.0",
   "license": "MIT",
