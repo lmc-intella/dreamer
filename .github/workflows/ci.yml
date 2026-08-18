@@ -31,9 +31,11 @@ jobs:
           set -euo pipefail
           # No scripts yet is not a pass to fake — fail loudly if the tree
           # somehow has none, rather than silently reporting green.
-          mapfile -t files < <(find scripts -name '*.sh' -type f 2>/dev/null | sort)
-          [ "${#files[@]}" -gt 0 ] || { echo "no shell scripts found under scripts/"; exit 1; }
-          shellcheck "${files[@]}"
+          # `mapfile` is bash 4; the macOS runner's /bin/bash is 3.2, so this
+          # walks the tree with find/xargs instead.
+          count=$(find scripts -name '*.sh' -type f | wc -l)
+          [ "$count" -gt 0 ] || { echo "no shell scripts found under scripts/"; exit 1; }
+          find scripts -name '*.sh' -type f -print0 | sort -z | xargs -0 shellcheck
 
       - name: bats
         run: bats tests/
