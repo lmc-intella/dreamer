@@ -161,7 +161,10 @@ scratch_repo() {
 @test "worktree: the SKILL.md recipe isolates the run from the user's checkout" {
   scratch_repo execute-plan-2story-1.md
   eval "$(sh_block 2)"
-  [ "$WORKTREE_PATH" = "$MAIN/../proj-execute-plan-2story-1" ]
+  # Compare resolved paths: on macOS $MAIN sits under /var, a symlink to
+  # /private/var, and `git rev-parse --show-toplevel` returns the resolved form,
+  # so the two spellings of the same directory differ as strings.
+  [ "$(cd "$WORKTREE_PATH" && pwd -P)" = "$(cd "$MAIN/.." && pwd -P)/proj-execute-plan-2story-1" ]
   [ -d "$WORKTREE_PATH" ]
   [ "$(g -C "$WORKTREE_PATH" rev-parse --abbrev-ref HEAD)" = sprint/execute-plan-2story-1 ]
   # The user's checkout is untouched: same branch, same commit, clean tree.
