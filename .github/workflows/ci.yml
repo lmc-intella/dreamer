@@ -1,0 +1,39 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  tests:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install tooling
+        run: |
+          set -euo pipefail
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq bats jq shellcheck
+          else
+            brew install bats-core jq shellcheck
+          fi
+          bats --version; jq --version; shellcheck --version | head -3
+
+      - name: shellcheck
+        run: |
+          set -euo pipefail
+          # No scripts yet is not a pass to fake — fail loudly if the tree
+          # somehow has none, rather than silently reporting green.
+          mapfile -t files < <(find scripts -name '*.sh' -type f 2>/dev/null | sort)
+          [ "${#files[@]}" -gt 0 ] || { echo "no shell scripts found under scripts/"; exit 1; }
+          shellcheck "${files[@]}"
+
+      - name: bats
+        run: bats tests/

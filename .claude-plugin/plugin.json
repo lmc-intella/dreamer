@@ -1,0 +1,17 @@
+{
+  "name": "mad-dreamer",
+  "version": "0.1.0",
+  "description": "Fast-path sprint plugin: /mad-dreamer:init audits and slims a Claude config in one measured pass, /mad-dreamer:plan turns a goal into a contract-valid stamped plan with batched decisions, and /mad-dreamer:execute drives that plan to a merged commit with a TDD spine. Keeps the invariant gates, drops the process ceremony.",
+  "author": {
+    "name": "Linus McManamey",
+    "email": "linus.a.mcm@gmail.com"
+  },
+  "license": "MIT",
+  "keywords": [
+    "agents",
+    "sprint",
+    "tdd",
+    "planning",
+    "orchestration"
+  ]
+}
