@@ -10,6 +10,26 @@ the diff size says.
 
 ## [Unreleased]
 
+### Added
+
+- **`scripts/repomix.sh`** — packs a repo into one xml file (`.dreamer/repo.xml`)
+  and traverses it: `pack` builds it (repomix when installed, `git ls-files`
+  otherwise, same pack shape either way), `outline` maps directories, files and
+  line counts, `show` prints one file straight out of the pack. Writes nothing
+  but the pack, and never packs the pack into itself.
+- **`scripts/ground.sh --pack <file>`** — scan a pack `repomix.sh pack` already
+  built (`PROVIDER=pack`) instead of building a second one.
+
+### Changed
+
+- **`/dreamer:plan`** step 1 now packs the repo and reads the outline before any
+  plan text exists, grounds against that same pack, and reads its ≤5 files out of
+  it with `repomix.sh show`.
+- **`/dreamer:execute`** gains step 4: pack the sprint worktree and traverse it
+  before a line of code, check every story's `Touches` against the map, and read
+  a story's files out of the pack at RED. The execute SKILL.md body budget moved
+  from 120 to 130 lines to hold that phase.
+
 ## [0.1.0] — 2026-08-19
 
 First release.

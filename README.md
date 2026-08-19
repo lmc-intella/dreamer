@@ -27,7 +27,10 @@ the contract scripts are vendored under `scripts/vendor/`.
 ## Install
 
 Needs `git`, `bash`, `python3` and `jq` on `PATH` — `gate.sh preflight` checks
-all four and names whatever is missing. `bats` and `shellcheck` are dev-only.
+all four and names whatever is missing. `repomix` is optional: plan and execute
+pack the repo to one xml file and read it through that, falling back to
+`git ls-files` for the same pack when repomix is not installed. `bats` and
+`shellcheck` are dev-only.
 
 This repo is its own marketplace: `.claude-plugin/marketplace.json` declares one
 plugin, `dreamer`, sourced from the repo root. So in a Claude Code session:

@@ -18,22 +18,38 @@ these four rules hold for the whole run:
 - **Only CRITICAL/HIGH re-open the review.** MEDIUM/LOW are applied in place.
 - The plan file is the only artefact. Write nothing else.
 
-## Step 1 — intake + ground
+## Step 1 — pack the repo, traverse it, ground in it
 
 1. Restate the goal in one sentence and name the repo it lands in. Do **not**
    stop for confirmation — the restatement is question 1 of the step-2 batch, so
    the goal is confirmed inside the call that settles the decisions.
-2. Pick 3–8 goal keywords — symbols, filenames, domain nouns — ground them in
-   **one** call:
+2. **Pack the repo, then traverse it — before a line of plan exists.** The first
+   call writes the whole repo to one xml file, `.dreamer/repo.xml` (a run
+   artefact: gitignored, never committed); the second is the map of it —
+   directories, files, line counts:
    ```sh
-   scripts/ground.sh --root <repo> --max 8 <term> <term> <term>
+   bash scripts/repomix.sh pack --root <repo>
+   bash scripts/repomix.sh outline --pack .dreamer/repo.xml
    ```
-   One call scans one pack for every term (repomix when installed, `git ls-files`
-   otherwise); re-run only for genuinely new terms. On `STATUS=FAIL
-   REASON=no-provider` say so plainly and plan from files you read directly.
-3. Read at most 5 files the hit lines point at and write down what exists today:
+   `PROVIDER=repomix` when repomix is on PATH, `git-ls-files` otherwise; both
+   emit the same pack, and `STATUS=FAIL REASON=no-provider` (neither) is not a
+   stop — say so and plan from files you read directly. Read the outline before
+   anything else and write one paragraph of what this repo is: layout, entry
+   points, where tests live, which directory the goal lands in. A plan drafted
+   before the map is read is a guess about someone else's repo.
+3. Pick 3–8 goal keywords — symbols, filenames, domain nouns — and scan that same
+   pack for all of them in **one** call:
+   ```sh
+   bash scripts/ground.sh --pack .dreamer/repo.xml --max 8 <term> <term> <term>
+   ```
+   Re-run only for genuinely new terms. With no pack, `ground.sh --root <repo>`
+   builds its own and prints the same shape.
+4. Read at most 5 files the hit lines point at, out of the pack rather than off
+   disk — `bash scripts/repomix.sh show <path> --pack .dreamer/repo.xml`, with
+   `--from`/`--max` to window a long one — and write down what exists today:
    entry points, behaviour, covering tests. A story whose `Touches` names a path
-   grounding never saw is ungrounded — ground it or cut it.
+   neither the outline nor the grounding ever saw is ungrounded — ground it or
+   cut it.
 
 ## Step 2 — decide + draft
 
@@ -89,7 +105,8 @@ bash scripts/gate.sh stamp <plan.md>
 # <id>-<slug> — <one-line goal>
 <!-- adversarial-review: status=clean rounds=1 date=2026-01-01 reviewer=dreamer mode=dreamer -->
 
-<2–5 lines: the goal, and what grounding found. Name the ground.sh call.>
+<2–5 lines: the goal, what the pack outline showed, what grounding found.
+Name the repomix.sh pack + the ground.sh call.>
 
 ## Assumptions
 - <decision settled from the repo instead of asked>
@@ -112,7 +129,8 @@ bash scripts/gate.sh stamp <plan.md>
 
 ## Checklist
 
-- [ ] Goal restated; grounding run in one `scripts/ground.sh` call
+- [ ] Repo packed (`repomix.sh pack`) and traversed (`outline`) before drafting
+- [ ] Goal restated; grounding run in one `scripts/ground.sh --pack` call
 - [ ] Decisions filtered — repo-answerable ones written to `## Assumptions`
 - [ ] Exactly one `AskUserQuestion` batch (≤4 questions), ≤1 push-back batch
 - [ ] Plan drafted in the shape above, filename carries a story id

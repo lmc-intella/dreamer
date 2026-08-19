@@ -3,11 +3,14 @@
 
 The worked end-to-end output of `skills/plan/SKILL.md` run on one toy goal —
 "reject a bad config before the service starts" — against the fixture repo at
-tests/fixtures/ground-repo. Grounded with:
+tests/fixtures/ground-repo. Packed, traversed and grounded with:
 
-    scripts/ground.sh --root <ground-repo> --max 6 load_config Service schema port workers
+    scripts/repomix.sh pack --root <ground-repo>
+    scripts/repomix.sh outline --pack <ground-repo>/.dreamer/repo.xml
+    scripts/ground.sh --pack <ground-repo>/.dreamer/repo.xml --max 6 load_config Service schema port workers
 
-which reported PROVIDER=repomix FILES=4 and located `load_config` (src/config.py:6),
+which reported PROVIDER=repomix FILES=4 — a flat `src/` (2 files), `tests/` (1)
+and a README — and located `load_config` (src/config.py:6),
 `Service.start` (src/service.py:10) and the untyped `DEFAULTS` (src/config.py:3).
 Every story below names a file that grounding actually found.
 

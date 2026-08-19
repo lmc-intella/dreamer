@@ -82,13 +82,16 @@ scratch_repo() {
 
 # --- the skill's own shape ---------------------------------------------------
 
-@test "SKILL.md body is at most 120 lines" {
+@test "SKILL.md body is at most 130 lines" {
   local total body
   total="$(wc -l <"$SKILL")"
   # 5 lines of frontmatter (--- name model description ---).
   body=$((total - 5))
-  [ "$body" -le 120 ] || {
-    echo "body is $body lines (total $total); budget is 120"
+  # 120 until the repo-pack phase (step 4 + the RED read) landed; raised once,
+  # deliberately, to 130. It is a budget, not a target: an addition that does not
+  # fit pays for itself by cutting prose, it does not move this number again.
+  [ "$body" -le 130 ] || {
+    echo "body is $body lines (total $total); budget is 130"
     return 1
   }
 }

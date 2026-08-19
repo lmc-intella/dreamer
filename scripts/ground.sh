@@ -2,13 +2,15 @@
 #
 # ground.sh — self-contained repo grounding for the dreamer plan skill.
 #
-#   ground.sh [--root <dir>] [--max <n>] [--] <term> [<term>...]
+#   ground.sh [--root <dir>] [--pack <file>] [--max <n>] [--] <term> [<term>...]
 #
 # Packs the repo ONCE and scans that pack for every term in a single pass, so
 # grounding a plan costs one tool call no matter how many keywords the goal has.
 #
 # The provider is chosen by what is on PATH — never configured, never resolved
-# from another repository or plugin:
+# from another repository or plugin — unless --pack names a pack already built
+# by `repomix.sh pack`, in which case that file is scanned as-is (PROVIDER=pack)
+# and nothing is re-packed:
 #   repomix       `repomix` is on PATH: one XML pack of <root>.
 #   git-ls-files  otherwise: the tracked files from `git ls-files`, assembled
 #                 into the same `<file path="...">` pack shape, so one scanner
@@ -29,7 +31,7 @@
 #
 # stdout — STATUS, then detail lines, then one block per term:
 #   STATUS=OK|FAIL
-#   PROVIDER=repomix|git-ls-files
+#   PROVIDER=repomix|git-ls-files|pack
 #   ROOT=<abs>  FILES=<n>  TERMS=<n>  MAX=<n>          (one per line)
 #   ## <term>
 #   HITS=<n>                                   total matches, not just shown
@@ -39,12 +41,14 @@ set -euo pipefail
 
 MAX=12
 ROOT=.
+PACK_IN=""
 TERMS=()
 
 usage() {
   cat >&2 <<'USAGE'
-usage: ground.sh [--root <dir>] [--max <n>] [--] <term> [<term>...]
+usage: ground.sh [--root <dir>] [--pack <file>] [--max <n>] [--] <term> [<term>...]
   --root <dir>   directory to ground in (default: .)
+  --pack <file>  scan this existing pack (repomix.sh pack) instead of building one
   --max <n>      hit lines shown per term (default: 12; HITS= always totals all)
 USAGE
   exit 2
@@ -60,6 +64,7 @@ fail() {
 while [ $# -gt 0 ]; do
   case "$1" in
     --root) ROOT="${2:-}"; [ -n "$ROOT" ] || usage; shift 2 ;;
+    --pack) PACK_IN="${2:-}"; [ -n "$PACK_IN" ] || usage; shift 2 ;;
     --max)
       MAX="${2:-}"
       case "$MAX" in ''|*[!0-9]*) printf 'ground.sh: --max must be a number\n' >&2; usage ;; esac
@@ -86,7 +91,13 @@ SCRATCH="$(mktemp -d)"
 PACK="$SCRATCH/pack.xml"
 PROVIDER=""
 
-if have repomix; then
+if [ -n "$PACK_IN" ]; then
+  [ -s "$PACK_IN" ] || fail pack-missing
+  PACK="$PACK_IN"
+  PROVIDER=pack
+fi
+
+if [ -z "$PROVIDER" ] && have repomix; then
   if repomix --quiet --style xml --no-file-summary --no-directory-structure \
        -o "$PACK" "$ROOT" >/dev/null 2>&1 && [ -s "$PACK" ]; then
     PROVIDER=repomix
