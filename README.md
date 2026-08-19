@@ -29,19 +29,47 @@ the contract scripts are vendored under `scripts/vendor/`.
 Needs `git`, `bash`, `python3` and `jq` on `PATH` — `gate.sh preflight` checks
 all four and names whatever is missing. `bats` and `shellcheck` are dev-only.
 
+This repo is its own marketplace: `.claude-plugin/marketplace.json` declares one
+plugin, `dreamer`, sourced from the repo root. So in a Claude Code session:
+
+```
+/plugin marketplace add lmc-intella/dreamer
+/plugin install dreamer@dreamer
+```
+
+The same two steps from a shell, if you would rather not open a session first:
+
+```sh
+claude plugin marketplace add lmc-intella/dreamer
+claude plugin install dreamer@dreamer
+```
+
+`dreamer@dreamer` is `plugin@marketplace`, not a typo — the marketplace and its
+one plugin share a name. Installed scope is `user` by default; `--scope project`
+puts it in the repo you are standing in, `--scope local` in your private
+settings for that repo.
+
+Check what landed, update it, or take it back out:
+
+```sh
+claude plugin details dreamer          # 3 skills, 0 agents, 0 hooks, ~269 always-on tokens
+claude plugin marketplace update dreamer && claude plugin update dreamer
+claude plugin uninstall dreamer        # add --scope if you installed with one
+claude plugin marketplace remove dreamer
+```
+
+Installed, the plugin's own files live at
+`~/.claude/plugins/cache/dreamer/dreamer/<version>` — that is the path the
+quickstart below calls `$DREAMER`, and it ships `scripts/` and `tests/` too, so
+the gates and fixtures are there without a clone.
+
+**Working on the plugin itself?** Clone it and load the working tree per
+session, which is the easiest thing to undo and needs no marketplace at all:
+
 ```sh
 git clone https://github.com/lmc-intella/dreamer.git ~/dreamer
-```
-
-Load it per session, which is the easiest thing to undo:
-
-```sh
 claude --plugin-dir ~/dreamer
 ```
-
-Or add it permanently with `/plugin marketplace add ~/dreamer` followed by
-`/plugin install dreamer`. Either way `/plugin` lists three commands and
-nothing else; the whole plugin costs ~269 always-on tokens (`claude --plugin-dir ~/dreamer plugin details dreamer`).
 
 ## 60-second quickstart
 
@@ -49,11 +77,14 @@ A toy sprint, start to merge, using the fixture plan this repo ships. Run it in
 a throwaway directory, not in a project you care about.
 
 ```sh
+# 0 — where the installed plugin lives. Cloned instead? Point this at the clone.
+DREAMER="$(ls -d ~/.claude/plugins/cache/dreamer/dreamer/* | sort -V | tail -1)"
+
 # 1 — a toy repo, from the fixture the shipped plan was written against
 TOY="$(mktemp -d)/toy-service"
 mkdir -p "$TOY/docs"
-cp -r ~/dreamer/tests/fixtures/ground-repo/. "$TOY/"
-cp ~/dreamer/tests/fixtures/plan-toy-1.md "$TOY/docs/"
+cp -r "$DREAMER/tests/fixtures/ground-repo/." "$TOY/"
+cp "$DREAMER/tests/fixtures/plan-toy-1.md" "$TOY/docs/"
 cd "$TOY"
 
 # 2 — the toy's one existing test is pytest-shaped, so say so. This file is also
@@ -71,15 +102,15 @@ uv venv -q && uv pip install -q pytest pytest-cov && . .venv/bin/activate
 # no uv? `python3 -m pip install pytest pytest-cov` does the same job.
 
 # 4 — the three gates execute runs at intake, before any session opens
-bash ~/dreamer/scripts/gate.sh preflight                      # STATUS=OK
-bash ~/dreamer/scripts/gate.sh plan-contract docs/plan-toy-1.md  # STORIES=3 NODES=3 EDGES=2
-bash ~/dreamer/scripts/gate.sh stamp docs/plan-toy-1.md          # MODE=dreamer
+bash "$DREAMER"/scripts/gate.sh preflight                      # STATUS=OK
+bash "$DREAMER"/scripts/gate.sh plan-contract docs/plan-toy-1.md  # STORIES=3 NODES=3 EDGES=2
+bash "$DREAMER"/scripts/gate.sh stamp docs/plan-toy-1.md          # MODE=dreamer
 
 # 5 — the sprint
-claude --plugin-dir ~/dreamer
+claude
 ```
 
-Then, in that session:
+Then, in that session (`claude --plugin-dir ~/dreamer` instead, if you cloned):
 
 ```
 /dreamer:execute docs/plan-toy-1.md
