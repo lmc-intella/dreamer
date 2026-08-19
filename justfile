@@ -8,6 +8,7 @@ opus:
 # interactive Claude shell on Fable, permissions off
 fable:
     @claude --dangerously-skip-permissions --model fable "/caveman"
+
 # validate the plugin manifest, run the gates, then tag the release and push it.
 # `just publish --dry-run` prints the tag it would create and pushes nothing.
 publish FLAGS='--push':
