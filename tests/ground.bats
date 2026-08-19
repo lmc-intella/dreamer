@@ -4,7 +4,7 @@
 #
 # Hermetic: every test builds its own git repo from tests/fixtures/ground-repo
 # inside $BATS_TEST_TMPDIR. Nothing reads or writes $HOME, the developer's real
-# repositories, or the mad-dreamer checkout itself.
+# repositories, or the dreamer checkout itself.
 #
 # Provider selection is exercised through PATH only — no install, no uninstall,
 # no flag. `no_repomix_path` drops every PATH entry that holds a repomix binary;

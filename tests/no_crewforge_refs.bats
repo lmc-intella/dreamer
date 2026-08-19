@@ -1,12 +1,12 @@
 #!/usr/bin/env bats
 
-# mad-dreamer is standalone: it vendors the plan contract and never reaches
+# dreamer is standalone: it vendors the plan contract and never reaches
 # into a crewforge5 install at runtime. Three strings prove a reach-in, so no
 # shipped file may contain them.
 #
 # Two paths are excluded, and only these two:
 #   - this test file, which must name the strings to ban them;
-#   - docs/mad-dreamer-launch-1.md, the launch spec, which states the ban.
+#   - docs/dreamer-launch-1.md, the launch spec, which states the ban.
 # Both mention the strings; neither resolves one.
 
 repo_root() {
@@ -18,7 +18,7 @@ banned_hits() {
   cd "$(repo_root)" || return 1
   grep -rIn --exclude-dir=.git --exclude-dir=node_modules \
     --exclude='no_crewforge_refs.bats' \
-    --exclude='mad-dreamer-launch-1.md' \
+    --exclude='dreamer-launch-1.md' \
     -e "$pattern" . || true
 }
 

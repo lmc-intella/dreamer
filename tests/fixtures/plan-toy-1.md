@@ -1,5 +1,5 @@
 # plan-toy-1 — validate toy-service config against a schema before start
-<!-- adversarial-review: status=clean rounds=2 date=2026-08-18 reviewer=mad-dreamer mode=mad-dreamer -->
+<!-- adversarial-review: status=clean rounds=2 date=2026-08-18 reviewer=dreamer mode=dreamer -->
 
 The worked end-to-end output of `skills/plan/SKILL.md` run on one toy goal —
 "reject a bad config before the service starts" — against the fixture repo at
@@ -94,7 +94,7 @@ checkout because Phase 0 resolves the sprint dir relative to $PWD.
 
   CF5="$HOME/.claude/plugins/cache/crewforge5/crewforge5/0.4.2"
   cd "$(mktemp -d)" && git init -q .
-  cp <mad-dreamer>/tests/fixtures/plan-toy-1.md .
+  cp <dreamer>/tests/fixtures/plan-toy-1.md .
   mkdir -p .crewforge5/execute
   printf '{"flow":"execute","started_at":"2026-08-18T00:00:00Z","phase":{},"plan":"plan-toy-1.md"}\n' \
     > .crewforge5/execute/state.json

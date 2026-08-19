@@ -1,7 +1,7 @@
 # Stamped plan fixture
-<!-- adversarial-review: status=clean rounds=2 date=2026-08-18 reviewer=mad-dreamer mode=mad-dreamer -->
+<!-- adversarial-review: status=clean rounds=2 date=2026-08-18 reviewer=dreamer mode=dreamer -->
 
-Carries the upstream stamp grammar plus the one permitted mad-dreamer extension.
+Carries the upstream stamp grammar plus the one permitted dreamer extension.
 
 ## Story 1: Something
 

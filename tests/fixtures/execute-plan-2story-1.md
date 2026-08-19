@@ -1,5 +1,5 @@
 # execute-plan-2story-1 — a two-story toy sprint for the execute spine
-<!-- adversarial-review: status=clean rounds=1 date=2026-08-19 reviewer=mad-dreamer mode=mad-dreamer -->
+<!-- adversarial-review: status=clean rounds=1 date=2026-08-19 reviewer=dreamer mode=dreamer -->
 
 Read-only fixture. `tests/execute.bats` copies this plan into a scratch git repo
 under `$BATS_TEST_TMPDIR` and drives `skills/execute/SKILL.md`'s mechanical spine

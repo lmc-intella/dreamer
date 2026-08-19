@@ -139,7 +139,7 @@ scratch_repo() {
   run bash "$GATE" stamp "$FIXTURES/execute-plan-2story-1.md"
   [ "$status" -eq 0 ]
   assert_line_kv "STATUS=OK"
-  assert_line_kv "MODE=mad-dreamer"
+  assert_line_kv "MODE=dreamer"
 
   run bash "$GATE" stamp "$FIXTURES/unstamped-plan-1.md"
   [ "$status" -eq 1 ]
@@ -172,8 +172,8 @@ scratch_repo() {
   [ "$(g -C "$MAIN" rev-parse main)" = "$SEED" ]
   [ -z "$(g -C "$MAIN" status --porcelain)" ]
   # Run artefacts written in the worktree stay out of git.
-  mkdir -p "$WORKTREE_PATH/.mad-dreamer/execute"
-  echo scratch >"$WORKTREE_PATH/.mad-dreamer/execute/note.txt"
+  mkdir -p "$WORKTREE_PATH/.dreamer/execute"
+  echo scratch >"$WORKTREE_PATH/.dreamer/execute/note.txt"
   [ -z "$(g -C "$WORKTREE_PATH" status --porcelain)" ]
 }
 
@@ -194,7 +194,7 @@ scratch_repo() {
 
   # 3. Isolated worktree, straight from the skill.
   eval "$(sh_block 2)"
-  ART=".mad-dreamer/execute"
+  ART=".dreamer/execute"
   mkdir -p "$ART"
 
   # --- Story 1 -------------------------------------------------------------
@@ -360,8 +360,8 @@ MSG
   # 5. Full suite plus the run record, from the worktree.
   run bash "$GATE" tests --coverage 60
   [ "$status" -eq 0 ]
-  mkdir -p .mad-dreamer
-  cat >.mad-dreamer/state.json <<'JSON'
+  mkdir -p .dreamer
+  cat >.dreamer/state.json <<'JSON'
 { "run_id": "execute-2026-08-19T00:00:00Z",
   "plan": "execute-plan-2story-1.md",
   "mode": "execute",

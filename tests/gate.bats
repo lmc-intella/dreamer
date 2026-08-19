@@ -120,13 +120,13 @@ init_repo() {
 
 # --- stamp -------------------------------------------------------------------
 
-@test "stamp: OK on a status=clean stamp carrying mode=mad-dreamer" {
+@test "stamp: OK on a status=clean stamp carrying mode=dreamer" {
   run bash "$GATE" stamp "$FIXTURES/stamped-plan-1.md"
   [ "$status" -eq 0 ]
   assert_line_kv "STATUS=OK"
   assert_line_kv "REVIEW_STATUS=clean"
   assert_line_kv "ROUNDS=2"
-  assert_line_kv "MODE=mad-dreamer"
+  assert_line_kv "MODE=dreamer"
 }
 
 @test "stamp: OK on an unextended upstream stamp (MODE=none)" {
@@ -146,7 +146,7 @@ init_repo() {
   assert_line_kv "REASON=no-adversarial-stamp"
 }
 
-@test "stamp: FAIL on a mode= value other than mad-dreamer" {
+@test "stamp: FAIL on a mode= value other than dreamer" {
   run bash "$GATE" stamp "$FIXTURES/badmode-plan-1.md"
   [ "$status" -eq 1 ]
   assert_line_kv "STATUS=FAIL"
@@ -252,12 +252,12 @@ init_repo() {
 
 @test "report: OK and summarises a well-formed state file" {
   cd "$BATS_TEST_TMPDIR" || return 1
-  mkdir -p .mad-dreamer
-  cat >.mad-dreamer/state.json <<'JSON'
+  mkdir -p .dreamer
+  cat >.dreamer/state.json <<'JSON'
 {
   "run_id": "md-0001",
   "plan": "docs/story-1.md",
-  "mode": "mad-dreamer",
+  "mode": "dreamer",
   "gates": { "preflight": "OK", "plan-contract": "OK", "tests": "FAIL" }
 }
 JSON
@@ -266,7 +266,7 @@ JSON
   assert_line_kv "STATUS=OK"
   assert_line_kv "RUN_ID=md-0001"
   assert_line_kv "PLAN=docs/story-1.md"
-  assert_line_kv "MODE=mad-dreamer"
+  assert_line_kv "MODE=dreamer"
   assert_line_kv "GATES_TOTAL=3"
   assert_line_kv "GATES_OK=2"
   assert_line_kv "GATES_FAIL=1"
@@ -282,9 +282,9 @@ JSON
 }
 
 @test "report: FAIL when the state file is malformed" {
-  mkdir -p "$BATS_TEST_TMPDIR/badstate/.mad-dreamer"
+  mkdir -p "$BATS_TEST_TMPDIR/badstate/.dreamer"
   cd "$BATS_TEST_TMPDIR/badstate" || return 1
-  printf '{ "run_id": ' >.mad-dreamer/state.json
+  printf '{ "run_id": ' >.dreamer/state.json
   run bash "$GATE" report
   [ "$status" -eq 1 ]
   assert_line_kv "STATUS=FAIL"

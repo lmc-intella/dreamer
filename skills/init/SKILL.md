@@ -1,7 +1,7 @@
 ---
 name: init
 model: opus
-description: Audit and slim a Claude config in one measured pass — measure, one batched skill validator and one batched agent validator, apply CRITICAL/HIGH, re-measure, report. Use on /mad-dreamer:init, "audit my Claude config", "slim my skills".
+description: Audit and slim a Claude config in one measured pass — measure, one batched skill validator and one batched agent validator, apply CRITICAL/HIGH, re-measure, report. Use on /dreamer:init, "audit my Claude config", "slim my skills".
 ---
 
 # init
@@ -26,8 +26,8 @@ this file. Work with `cd "$ROOT"` for every command below.
       here to confirm git, `python3` and `jq` exist, which is what makes a revert
       possible. On `REASON=not-a-git-repo`, STOP: say so and offer to continue
       with per-file `.bak` revert only, which has no whole-run undo.
-- [ ] **2. Measure (before).** `python3 "$MD/scripts/measure.py" "$ROOT" > .mad-dreamer/init/before.json`
-      (`mkdir -p .mad-dreamer/init` first). JSON: per-file `chars`, `lines`,
+- [ ] **2. Measure (before).** `python3 "$MD/scripts/measure.py" "$ROOT" > .dreamer/init/before.json`
+      (`mkdir -p .dreamer/init` first). JSON: per-file `chars`, `lines`,
       `est_tokens`, per-skill `support_chars`, plus `by_kind` and `totals`.
       Token figures are a `chars / 4` estimate, not a tokenizer — quote them as
       estimates and lean on the char delta as the real number.
@@ -42,9 +42,9 @@ this file. Work with `cd "$ROOT"` for every command below.
       not loop: one audit, one triage, one apply.
 - [ ] **5. Apply, every edit through the retention gate.** Per file, no
       exceptions, no batching two files into one gate run — see below.
-- [ ] **6. Measure (after).** `python3 "$MD/scripts/measure.py" "$ROOT" > .mad-dreamer/init/after.json`.
-- [ ] **7. Report and close.** Write `.mad-dreamer/init/report.md` from the
-      template below, write `.mad-dreamer/state.json`, then
+- [ ] **6. Measure (after).** `python3 "$MD/scripts/measure.py" "$ROOT" > .dreamer/init/after.json`.
+- [ ] **7. Report and close.** Write `.dreamer/init/report.md` from the
+      template below, write `.dreamer/state.json`, then
       `bash "$MD/scripts/gate.sh" report`. `STATUS=OK` closes the run.
 
 ## The retention gate is not optional
@@ -68,7 +68,7 @@ bash "$MD/scripts/vendor/retention_gate.sh" "$f.bak" "$f"
 Never hand the gate a file you have already reverted or overwritten — it compares
 two files and cannot know which one you meant.
 
-## `.mad-dreamer/state.json`
+## `.dreamer/state.json`
 
 ```json
 { "run_id": "init-<UTC ISO8601>", "plan": "none", "mode": "init",
@@ -77,7 +77,7 @@ two files and cannot know which one you meant.
 
 `retention` is `OK` only when zero edits were reverted; otherwise `FAIL`.
 
-## Report template — `.mad-dreamer/init/report.md`
+## Report template — `.dreamer/init/report.md`
 
 ```md
 # init report — <UTC ISO8601>

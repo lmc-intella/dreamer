@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 CHARS_PER_TOKEN = 4
-SKIP_DIRS = {".git", ".hg", "node_modules", "__pycache__", ".venv", ".mad-dreamer"}
+SKIP_DIRS = {".git", ".hg", "node_modules", "__pycache__", ".venv", ".dreamer"}
 INSTRUCTION_FILES = ("CLAUDE.md", "CLAUDE.local.md")
 
 

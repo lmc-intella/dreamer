@@ -1,7 +1,7 @@
 ---
 name: plan
 model: opus
-description: Goal to a contract-valid, adversarially-stamped plan — repo grounding, one batched decision round, thresholded review. Use on /mad-dreamer:plan, "plan this feature", "write a sprint plan".
+description: Goal to a contract-valid, adversarially-stamped plan — repo grounding, one batched decision round, thresholded review. Use on /dreamer:plan, "plan this feature", "write a sprint plan".
 ---
 
 # plan — goal to a stamped, contract-valid plan in three steps
@@ -71,11 +71,11 @@ Leave no `<!-- FINDING …` marker in the plan — an unfolded marker fails the
 upstream findings gate. Stamp the line directly under the title:
 
 ```
-<!-- adversarial-review: status=clean rounds=<N> date=<YYYY-MM-DD> reviewer=mad-dreamer mode=mad-dreamer -->
+<!-- adversarial-review: status=clean rounds=<N> date=<YYYY-MM-DD> reviewer=dreamer mode=dreamer -->
 ```
 
 `status=user-override` only when the user explicitly accepts an open
-CRITICAL/HIGH; `mode=mad-dreamer` is mandatory, and the only field added to the
+CRITICAL/HIGH; `mode=dreamer` is mandatory, and the only field added to the
 upstream grammar. Both gates must then print `STATUS=OK`:
 
 ```sh
@@ -87,7 +87,7 @@ bash scripts/gate.sh stamp <plan.md>
 
 ```markdown
 # <id>-<slug> — <one-line goal>
-<!-- adversarial-review: status=clean rounds=1 date=2026-01-01 reviewer=mad-dreamer mode=mad-dreamer -->
+<!-- adversarial-review: status=clean rounds=1 date=2026-01-01 reviewer=dreamer mode=dreamer -->
 
 <2–5 lines: the goal, and what grounding found. Name the ground.sh call.>
 
@@ -118,7 +118,7 @@ bash scripts/gate.sh stamp <plan.md>
 - [ ] Plan drafted in the shape above, filename carries a story id
 - [ ] CRITICAL/HIGH looped to zero (≤3 rounds); MEDIUM/LOW in `## Review notes`;
       no `<!-- FINDING` marker left
-- [ ] Stamped `mode=mad-dreamer rounds=<N>`; `gate.sh plan-contract` and
+- [ ] Stamped `mode=dreamer rounds=<N>`; `gate.sh plan-contract` and
       `gate.sh stamp` both `STATUS=OK`
 
 Worked output carrying the interop cross-check it passed:

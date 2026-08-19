@@ -1,6 +1,6 @@
-# Benchmark — mad-dreamer vs a full crewforge5 flow
+# Benchmark — dreamer vs a full crewforge5 flow
 
-Dev machine, 2026-08-19. Claude Code 2.1.234, mad-dreamer 0.1.0 loaded with
+Dev machine, 2026-08-19. Claude Code 2.1.234, dreamer 0.1.0 loaded with
 `--plugin-dir`, crewforge5 0.4.2 from the plugin cache. Both flows were pointed
 at the same fixture plan, `tests/fixtures/plan-toy-1.md`, over the same toy repo,
 `tests/fixtures/ground-repo`.
@@ -11,7 +11,7 @@ real end-to-end runs; read the caveat before quoting them.
 
 ## Summary
 
-| Metric | crewforge5-full | mad-dreamer | Change | Provenance |
+| Metric | crewforge5-full | dreamer | Change | Provenance |
 | --- | --- | --- | --- | --- |
 | Doc-load, `execute` flow (chars) | 94,605 | 11,868 | **−87.5%** | measured, `wc -c` |
 | Doc-load, `execute` flow (est. tokens) | ~23,652 | ~2,967 | **−87.5%** | derived, `ceil(chars/4)` |
@@ -23,7 +23,7 @@ real end-to-end runs; read the caveat before quoting them.
 | Invariant-gate regressions | — | **0** | — | measured, gates re-run |
 
 > **The ≥60% tool-call reduction target is NOT VERIFIED.** Tool calls were
-> measured for both flows, but the two runs are not like-for-like: mad-dreamer
+> measured for both flows, but the two runs are not like-for-like: dreamer
 > finished the sprint and merged; crewforge5-full hit the 900-second cap still
 > inside Phase 0 of 10, with zero commits. A count taken from a run that did not
 > finish cannot be divided by one that did. The ≥60% doc-load target **is** met
@@ -44,7 +44,7 @@ are full of them. The *ratio* between two markdown corpora measured the same way
 is the trustworthy number; the absolute token figures are indicative only. The
 underlying `wc -c` character counts are exact.
 
-### mad-dreamer `execute`
+### dreamer `execute`
 
 Its SKILL.md says so in its own first line: "Two documents load for the whole
 run: this page and the plan."
@@ -113,7 +113,7 @@ session hook injects. Counting them would widen the gap, not narrow it.
 
 Same method, whole-flow doc set against the single SKILL.md that replaces it.
 
-| Flow | crewforge5 (SKILL.md + manifest + phase docs) | mad-dreamer (SKILL.md) | Change |
+| Flow | crewforge5 (SKILL.md + manifest + phase docs) | dreamer (SKILL.md) | Change |
 | --- | ---: | ---: | ---: |
 | `plan` | 18,689 chars (10 files) | 5,564 chars (1 file) | −70.2% |
 | `init` | 20,702 chars (10 files) | 5,333 chars (1 file) | −74.2% |
@@ -123,11 +123,11 @@ Same method, whole-flow doc set against the single SKILL.md that replaces it.
 
 ```sh
 CF5="$HOME/.claude/plugins/cache/crewforge5/crewforge5/0.4.2"
-MD="$HOME/mad-dreamer"
+MD="$HOME/dreamer"
 tok() { python3 -c 'import math,sys;print(math.ceil(int(sys.argv[1])/4))' "$1"; }
 
 c=$(cat "$MD/skills/execute/SKILL.md" "$MD/tests/fixtures/plan-toy-1.md" | wc -c)
-echo "mad-dreamer  chars=$c tokens=$(tok "$c")"
+echo "dreamer  chars=$c tokens=$(tok "$c")"
 
 c=$(cat "$CF5/skills/execute/SKILL.md" "$CF5/skills/execute/phases.json" \
         "$CF5"/skills/team-sprint/references/phase?/phase-[0-7].md \
@@ -138,11 +138,11 @@ echo "crewforge5   chars=$c tokens=$(tok "$c")"
 
 ## 2. Always-on plugin cost — measured
 
-Literal output of `claude --plugin-dir <repo> plugin details mad-dreamer`, run
+Literal output of `claude --plugin-dir <repo> plugin details dreamer`, run
 2026-08-19:
 
 ```
-mad-dreamer 0.1.0
+dreamer 0.1.0
 Component inventory
   Skills (3)  execute, init, plan
   Agents (0)
@@ -195,15 +195,15 @@ Both figures are the harness's own estimates and the tool says so.
 ## 3. Gate parity — measured
 
 "Zero invariant-gate regressions" means: for every gate upstream enforces
-mechanically, mad-dreamer enforces the same thing, and the process gates it drops
+mechanically, dreamer enforces the same thing, and the process gates it drops
 were dropped on purpose. Upstream's mechanical gates live in
 `skills/execute/scripts/phase_gate.sh` — only phases 0, 1, 8 and 9 have one;
 2–7 are judgment gates the phase docs state and no script decides.
 
-| Upstream mechanical gate | mad-dreamer equivalent | Verdict |
+| Upstream mechanical gate | dreamer equivalent | Verdict |
 | --- | --- | --- |
 | Phase 0 — plan-path contract (`validate_plan_path.sh`) | `gate.sh plan-contract` (same vendored script) | **kept** |
-| Phase 0 — required sub-skills present | — | **dropped**: mad-dreamer has no sub-skills to be absent |
+| Phase 0 — required sub-skills present | — | **dropped**: dreamer has no sub-skills to be absent |
 | Phase 1 — adversarial stamp grep | `gate.sh stamp`, the identical regex | **kept** |
 | Phase 1 — unfolded-findings check | `gate.sh stamp` + `plan` forbidding a leftover marker | **kept** |
 | Phase 8 — integration diagram artefact | — | **dropped**: process gate, named in the README |
@@ -217,7 +217,7 @@ Two of upstream's judgment gates became scripts here, which is the opposite of a
 regression: `tests`, `coverage` and `findings` are decided by exit code rather
 than by an agent's assurance.
 
-### mad-dreamer's gates, run against the shipped fixtures
+### dreamer's gates, run against the shipped fixtures
 
 Literal output, `bash scripts/gate.sh …` from the repo root:
 
@@ -226,7 +226,7 @@ $ gate.sh preflight --allow-dirty        STATUS=OK  TOOLS=ok GIT_REPO=yes TREE=c
 $ gate.sh plan-contract  plan-toy-1.md   STATUS=OK  PLAN_PATH=OK STORIES=3 NODES=3 EDGES=2
 $ gate.sh plan-contract  golden-template-1.md
                                          STATUS=OK  PLAN_PATH=OK STORIES=6 NODES=6 EDGES=3
-$ gate.sh stamp          plan-toy-1.md   STATUS=OK  REVIEW_STATUS=clean ROUNDS=2 MODE=mad-dreamer
+$ gate.sh stamp          plan-toy-1.md   STATUS=OK  REVIEW_STATUS=clean ROUNDS=2 MODE=dreamer
 $ gate.sh stamp          unstamped-plan-1.md
                                          STATUS=FAIL REASON=no-adversarial-stamp
 $ gate.sh findings       findings-clean.md
@@ -253,7 +253,7 @@ $ phase_gate.sh 0     STATUS=PASS   (exit 0)
 $ phase_gate.sh 1     STATUS=PASS   (exit 0)
 ```
 
-A plan written by `/mad-dreamer:plan`, carrying `mode=mad-dreamer`, passes
+A plan written by `/dreamer:plan`, carrying `mode=dreamer`, passes
 upstream's plan-path contract and its adversarial-stamp gate unmodified. The
 interop guarantee is not a design intention; it is a re-run.
 
@@ -266,7 +266,7 @@ fixture plan at `docs/plan-toy-1.md`:
 ```sh
 /usr/bin/time -f 'WALL_SECONDS=%e' -o wall.txt \
   timeout 900 claude --dangerously-skip-permissions \
-    [--plugin-dir <mad-dreamer>] --output-format stream-json --verbose \
+    [--plugin-dir <dreamer>] --output-format stream-json --verbose \
     -p 'Run /<plugin>:execute on docs/plan-toy-1.md. Coverage 60, merge into main when green.' \
     > run.jsonl
 ```
@@ -274,7 +274,7 @@ fixture plan at `docs/plan-toy-1.md`:
 Tool calls counted as `"type":"tool_use"` blocks in `run.jsonl`, split by whether
 the emitting event carried a `parent_tool_use_id` (i.e. came from a sub-agent).
 
-| | crewforge5-full | mad-dreamer |
+| | crewforge5-full | dreamer |
 | --- | --- | --- |
 | Outcome | **timed out at 900 s, inside Phase 0 of 10** | **completed: 3 story commits merged** |
 | Wall seconds | 900.5 (cap) | **727.5** |
@@ -290,22 +290,22 @@ the emitting event carried a `parent_tool_use_id` (i.e. came from a sub-agent).
 entire budget on Phase 0 — tooling probes, repomix pack, code-graph build, and a
 `crew-factory` spawn that was still re-validating its generated developer agent
 toward grade A when the clock ran out. It never reached the worktree, let alone a
-test. mad-dreamer's 72 calls bought three RED-GREEN-review-commit cycles and a
+test. dreamer's 72 calls bought three RED-GREEN-review-commit cycles and a
 merge; crewforge5's 58 bought a configured but unstarted sprint. Dividing one by
 the other would produce a number that means nothing, and reporting it as "−60%"
 would be a lie in the flattering direction.
 
 What can be said honestly from these two runs:
 
-- mad-dreamer reached a merged commit on this fixture in **12 minutes for $3.59**.
+- dreamer reached a merged commit on this fixture in **12 minutes for $3.59**.
 - crewforge5-full had not reached its first test after **15 minutes and $4.95**,
   and was still in setup. Its full run would plainly cost several multiples of
-  mad-dreamer's, but *several multiples* is an observation, not a measurement.
+  dreamer's, but *several multiples* is an observation, not a measurement.
 - No `AskUserQuestion` call blocked either run: both flows read their run-shape
   answers ("Coverage 60, merge into main when green") straight out of the prompt,
   which is what their own skills tell them to do. The headless blocker anticipated
   before the runs did not materialise. One honest caveat follows from that: in
-  headless mode mad-dreamer treated the prompt's "merge into main when green" as
+  headless mode dreamer treated the prompt's "merge into main when green" as
   the explicit merge confirmation its step 6 requires. Interactively that step is
   a real question, and the run is one turn longer.
 
@@ -316,8 +316,8 @@ crewforge5 run finish. In a scratch repo prepared exactly as above:
 
 ```sh
 cd "$(mktemp -d)" && git init -q -b main .
-cp -r <mad-dreamer>/tests/fixtures/ground-repo/. . && mkdir -p docs
-cp <mad-dreamer>/tests/fixtures/plan-toy-1.md docs/
+cp -r <dreamer>/tests/fixtures/ground-repo/. . && mkdir -p docs
+cp <dreamer>/tests/fixtures/plan-toy-1.md docs/
 printf '[tool.pytest.ini_options]\npythonpath = ["src"]\naddopts = "--cov=src --cov-report=term"\n' > pyproject.toml
 git add -A && git commit -qm "toy service"
 
@@ -339,18 +339,18 @@ row stays **UNMEASURED** and the ≥60% tool-call target stays unverified.
 
 What each run left behind in the user's checkout.
 
-| | crewforge5-full (partial run) | mad-dreamer (complete run) |
+| | crewforge5-full (partial run) | dreamer (complete run) |
 | --- | --- | --- |
 | Commits on the target branch | none | `2d84a26` feat(1), `8187184` feat(2), `ea7359f` refactor(3), `4302ee3` merge |
-| Sprint state | `.crewforge5/execute/state.json` + `.team-sprint/sprints/sprint-plan-toy-1/state.json` | `.mad-dreamer/state.json`, inside the worktree, removed with it |
+| Sprint state | `.crewforge5/execute/state.json` + `.team-sprint/sprints/sprint-plan-toy-1/state.json` | `.dreamer/state.json`, inside the worktree, removed with it |
 | Generated crew | `.claude/agents/`, `.claude/crews/`, `.claude/rules/` (20 KB) | none |
 | Recon caches | `.repomix-output.xml` (196 KB), `.codegraph/` (160 KB), `.recon/` | none |
-| Per-story artefacts | *not reached in the timed-out run.* Its phase docs declare `diff-<id>.patch`, `reviews-<id>-round-<N>.md`, `commit-msg-<id>.txt`, `stories.json`, `graph.json`, `plan-final.md`, `sprint-report.md` under the sprint dir | `findings-<id>.md`, `commit-msg-<id>.txt` under the worktree's `.mad-dreamer/execute`, removed on clean finish |
+| Per-story artefacts | *not reached in the timed-out run.* Its phase docs declare `diff-<id>.patch`, `reviews-<id>-round-<N>.md`, `commit-msg-<id>.txt`, `stories.json`, `graph.json`, `plan-final.md`, `sprint-report.md` under the sprint dir | `findings-<id>.md`, `commit-msg-<id>.txt` under the worktree's `.dreamer/execute`, removed on clean finish |
 | Sprint-level artefacts | *not reached.* Declared: `diff-sprint.patch`, `reviews-sprint-round-<N>-<reviewer>.md`, integration diagram, learning ledger | none |
 | Left in the tree after a clean finish | the sprint directory — its own docs make it the resume contract, so it is meant to persist | **nothing** — measured: the worktree was removed and the run artefacts went with it |
 
 Rows marked *not reached* are read off crewforge5's phase docs, not off the
-timed-out run. Everything in the mad-dreamer column is what the completed run
+timed-out run. Everything in the dreamer column is what the completed run
 actually left on disk.
 
 The two shapes that must match, and do:
@@ -359,7 +359,7 @@ The two shapes that must match, and do:
 Proved in §3 by running upstream's phase 0 and 1 gates over it.
 
 **The story commit.** `git log` reads identically either side. Literal
-`git log -1 --format=%B 8187184` from the mad-dreamer run:
+`git log -1 --format=%B 8187184` from the dreamer run:
 
 ```
 feat(2): Validate on load
@@ -380,7 +380,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 `git log --oneline --grep '^Story: 2'` finds it, which is the lookup upstream's
 per-story tooling depends on.
 
-**What mad-dreamer does not produce:** the sprint report, the integration
+**What dreamer does not produce:** the sprint report, the integration
 diagram, the distilled learning ledger, the per-round review transcripts, and
 the durable sprint directory. If you need a paper trail after the fact rather
 than a merge, that absence is the cost.
@@ -388,12 +388,12 @@ than a merge, that absence is the cost.
 ## 6. The trade-off, stated plainly
 
 **Thresholded review catches fewer MEDIUM and LOW findings than a six-round
-loop.** mad-dreamer re-opens a review only while a CRITICAL or HIGH finding is
+loop.** dreamer re-opens a review only while a CRITICAL or HIGH finding is
 open — at most two fix rounds in `execute`, at most three review rounds in
 `plan`. MEDIUM and LOW findings are reported and deferred, never applied and
 never re-checked. A full crewforge5 phase-7 fleet runs several reviewers over the
 sprint diff and iterates until the round gate is satisfied, so it surfaces a
-longer tail. On the run above, mad-dreamer's per-story reviewer raised a MEDIUM
+longer tail. On the run above, dreamer's per-story reviewer raised a MEDIUM
 worth taking — a test asserting on `inspect.getsource(...)`, which the reviewer
 demonstrated was gameable — and by protocol it was reported, not fixed. That is
 the shape of what you give up: real findings, correctly classified as
@@ -402,7 +402,7 @@ non-blocking, that nobody comes back to.
 Two further asymmetries, so the trade is not undersold:
 
 - **No fresh crew.** crewforge5 generates and grade-A validates a
-  language-matched agent crew for the repo. mad-dreamer spawns one general
+  language-matched agent crew for the repo. dreamer spawns one general
   reviewer per story. On an unusual stack that difference will show.
 - **No durable trail.** Everything in §5's right-hand column that says "removed
   with the worktree" is evidence that no longer exists after a green run.
@@ -410,7 +410,7 @@ Two further asymmetries, so the trade is not undersold:
 ### The escape hatch
 
 The interop guarantee makes the trade reversible after the fact, because a
-mad-dreamer plan *is* a crewforge5 plan. Both cases are one line:
+dreamer plan *is* a crewforge5 plan. Both cases are one line:
 
 ```
 # stakes rose before the sprint: run the full adversarial loop over the plan
@@ -434,8 +434,8 @@ it may outrun this file. **Not published — this is copy for review.**
 
 ```json
 {
-  "name": "mad-dreamer",
-  "source": "https://github.com/lmc-intella/mad-dreamer",
+  "name": "dreamer",
+  "source": "https://github.com/lmc-intella/dreamer",
   "description": "Three commands — init, plan, execute — that take a goal to a merged commit. Keeps every invariant gate: plan-contract parse, adversarial stamp, findings closed at threshold, tests green, coverage met, clean-tree preflight, retention safety. Drops the process ceremony: no per-phase state machine, no ledger distillation, no integration diagram. ~269 always-on tokens; the execute flow loads one page instead of twelve.",
   "version": "0.1.0",
   "license": "MIT",
@@ -445,10 +445,10 @@ it may outrun this file. **Not published — this is copy for review.**
 
 Listing blurb, ~60 words:
 
-> A fast-path sprint plugin. `/mad-dreamer:plan` turns a goal into a
+> A fast-path sprint plugin. `/dreamer:plan` turns a goal into a
 > contract-valid, adversarially stamped plan with two question batches, not
-> twenty. `/mad-dreamer:execute` drives it to a merged commit through an isolated
-> worktree, per-story TDD and a coverage floor. `/mad-dreamer:init` slims your
+> twenty. `/dreamer:execute` drives it to a merged commit through an isolated
+> worktree, per-story TDD and a coverage floor. `/dreamer:init` slims your
 > Claude config in one measured pass. Interoperable with crewforge5 plans in both
 > directions; no runtime dependency on it.
 

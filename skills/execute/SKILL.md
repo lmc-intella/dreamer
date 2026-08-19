@@ -1,7 +1,7 @@
 ---
 name: execute
 model: opus
-description: Stamped plan in, merged commit out — isolated worktree, per-story TDD, tests and coverage gate, one commit per story. Use on /mad-dreamer:execute, "run this plan", "execute the sprint".
+description: Stamped plan in, merged commit out — isolated worktree, per-story TDD, tests and coverage gate, one commit per story. Use on /dreamer:execute, "run this plan", "execute the sprint".
 ---
 
 # execute — stamped plan in, merged commit out
@@ -32,7 +32,7 @@ rewrite history, or touch `$TARGET` without the explicit confirmation in step 6.
       Any `STATUS=FAIL` stops the run: quote the `REASON=` line and stop. The
       stamp gate is a hard STOP with **no escape** — no flag, no prompt, no "the
       user says it is fine". An unstamped or unclean plan goes back to
-      `/mad-dreamer:plan`; it does not run here.
+      `/dreamer:plan`; it does not run here.
 - [ ] **2. Read the plan once** for story ids, titles, acceptance criteria,
       `Depends On`, `Touches`. `plan-contract` already proved the graph acyclic,
       so run the stories in plan order — no scheduler, no waves.
@@ -47,12 +47,12 @@ rewrite history, or touch `$TARGET` without the explicit confirmation in step 6.
       git worktree add -b "$SPRINT_BRANCH" "$WORKTREE_PATH" "$TARGET"
       cd "$WORKTREE_PATH"
       EX="$(git rev-parse --git-common-dir)/info/exclude"
-      grep -qxF '.mad-dreamer/' "$EX" || printf '.mad-dreamer/\n' >>"$EX"
+      grep -qxF '.dreamer/' "$EX" || printf '.dreamer/\n' >>"$EX"
       ```
 - [ ] **4. Per-story loop** (below), once per story, in order. Do not open a
       story until the one before it is committed.
 - [ ] **5. Full suite, then the record.** `gate.sh tests --coverage "$COV"` over
-      the whole worktree must print `STATUS=OK`. Write `.mad-dreamer/state.json`
+      the whole worktree must print `STATUS=OK`. Write `.dreamer/state.json`
       — `{"run_id":"execute-<UTC ISO8601>","plan":"<$PLAN>","mode":"execute",`
       `"gates":{"preflight":"OK","plan-contract":"OK","stamp":"OK","tests":"OK",`
       `"coverage":"OK","review":"OK"}}` — and run
@@ -68,7 +68,7 @@ rewrite history, or touch `$TARGET` without the explicit confirmation in step 6.
 ## The per-story loop
 
 `$SID` = the story id the plan contract reports (`1`, `mech-9`).
-`$ART` = `.mad-dreamer/execute` inside the worktree.
+`$ART` = `.dreamer/execute` inside the worktree.
 
 1. **RED — one failing test per AC, before a line of implementation.** Write a
    test for every acceptance criterion into the story's `Touches` test files,

@@ -1,4 +1,4 @@
-# mad-dreamer-launch-1 — standalone fast-path plugin (new repo)
+# dreamer-launch-1 — standalone fast-path plugin (new repo)
 
 Goal: a new repository shipping a Claude Code plugin with three commands —
 `init`, `plan`, `execute` — that produce the same output artifacts as
@@ -8,7 +8,7 @@ with no crewforge5 present. Interoperable: its plan files run under full
 crewforge5 execute and vice versa, because the plan contract and stamp format
 are held identical.
 
-Plugin name: **mad-dreamer** (ratified). Story 0 now covers repo + scaffold only.
+Plugin name: **dreamer** (ratified). Story 0 now covers repo + scaffold only.
 
 Design rules (carried over from the lite design, now standalone):
 
@@ -32,7 +32,7 @@ Design rules (carried over from the lite design, now standalone):
 
 ### Acceptance Criteria
 
-- Plugin name `mad-dreamer` recorded in `plugin.json` and README; a quick
+- Plugin name `dreamer` recorded in `plugin.json` and README; a quick
   marketplace/GitHub check confirms no collision, noted in the first commit
   message.
 - New repo initialised with `.claude-plugin/plugin.json` (name, version
@@ -78,7 +78,7 @@ Design rules (carried over from the lite design, now standalone):
   contract identity.
 - The stamp grammar accepted/emitted is byte-compatible with crewforge5's
   (`<!-- adversarial-review: status=... -->`), extended only by
-  `mode=mad-dreamer` — verified by a fixture that full crewforge5's findings
+  `mode=dreamer` — verified by a fixture that full crewforge5's findings
   gate also accepts (dev-machine test, documented, not CI-required).
 - `tests/gate.bats` covers every subcommand, one pass and one fail fixture
   each, green.
@@ -102,12 +102,12 @@ Design rules (carried over from the lite design, now standalone):
 
 ### Acceptance Criteria
 
-- `/mad-dreamer:init` runs three steps: (1) measure + audit in a single pass —
+- `/dreamer:init` runs three steps: (1) measure + audit in a single pass —
   a self-contained `measure.py` (char/token counts per skill/agent/CLAUDE.md;
   reimplemented, not vendored, ≤150 lines) plus ONE batched validator agent
   over all skills and ONE over all agents; (2) apply CRITICAL/HIGH fixes,
   list MEDIUM/LOW as recommendations; (3) re-measure, write
-  `.mad-dreamer/init/report.md` with the char delta.
+  `.dreamer/init/report.md` with the char delta.
 - Every edit passes vendored `retention_gate.sh`; a breach reverts the edit
   and records it in the report.
 - Agent spawns per run ≤ 3, recorded in the report.
@@ -130,14 +130,14 @@ Design rules (carried over from the lite design, now standalone):
 
 ### Acceptance Criteria
 
-- `/mad-dreamer:plan` runs three steps: (1) intake + ground — goal confirmed,
+- `/dreamer:plan` runs three steps: (1) intake + ground — goal confirmed,
   repo grounding via a self-contained pack-and-grep helper (repomix if
   installed, `git ls-files` + grep fallback; no crewforge5 use-repo-code);
   (2) decide + draft — open decisions framed, ONE `AskUserQuestion` call per
   ≤4 questions, one push-back round on the batch, plan drafted directly in
   contract shape; (3) review + stamp — single adversarial pass applying all
   findings, looping only while CRITICAL/HIGH remain, then stamp with
-  `mode=mad-dreamer rounds=<N>`.
+  `mode=dreamer rounds=<N>`.
 - Emitted plan passes `gate.sh plan-contract` with zero errors.
 - MEDIUM/LOW findings applied without a loop are listed in a `## Review
   notes` section of the plan.
@@ -161,7 +161,7 @@ Design rules (carried over from the lite design, now standalone):
 
 ### Acceptance Criteria
 
-- `/mad-dreamer:execute` keeps the load-bearing spine: isolated worktree,
+- `/dreamer:execute` keeps the load-bearing spine: isolated worktree,
   contract parse at intake, stamp hard-STOP (no override), per-story TDD
   (RED test per AC before implementation), tests-green + coverage gate, one
   commit per story, block-collect-close on every spawned child.
@@ -192,13 +192,13 @@ Design rules (carried over from the lite design, now standalone):
 ### Acceptance Criteria
 
 - `docs/benchmark.md` records, for the same fixture goal run through
-  crewforge5-full and `mad-dreamer` (dev machine, both installed): tool-call
+  crewforge5-full and `dreamer` (dev machine, both installed): tool-call
   count, wall time, tokens in loaded docs, output-artifact diff. Target:
   ≥60% reduction in tool calls and doc-load tokens, zero invariant-gate
   regressions.
 - The doc states the trade-off honestly: thresholded review catches fewer
   MEDIUM/LOW findings than a 6-round loop, and names the escape hatch (run
-  crewforge5's full phase-7 review over a `mad-dreamer` plan when stakes
+  crewforge5's full phase-7 review over a `dreamer` plan when stakes
   warrant — interop makes this a one-liner).
 - README carries install instructions, a 60-second quickstart (init → plan
   → execute on a toy repo), and the benchmark link.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# ground.sh — self-contained repo grounding for the mad-dreamer plan skill.
+# ground.sh — self-contained repo grounding for the dreamer plan skill.
 #
 #   ground.sh [--root <dir>] [--max <n>] [--] <term> [<term>...]
 #

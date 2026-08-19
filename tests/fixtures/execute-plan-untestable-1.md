@@ -1,5 +1,5 @@
 # execute-plan-untestable-1 — one story whose AC no test can fail on
-<!-- adversarial-review: status=clean rounds=1 date=2026-08-19 reviewer=mad-dreamer mode=mad-dreamer -->
+<!-- adversarial-review: status=clean rounds=1 date=2026-08-19 reviewer=dreamer mode=dreamer -->
 
 Read-only fixture, and a deliberately bad plan. It is stamped and
 contract-valid, so `gate.sh stamp` and `gate.sh plan-contract` both pass it —

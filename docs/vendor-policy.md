@@ -1,6 +1,6 @@
 # Vendor policy
 
-mad-dreamer owns the plan contract it enforces. It does not read a crewforge5
+dreamer owns the plan contract it enforces. It does not read a crewforge5
 install at runtime, does not resolve a plugin root, and does not degrade if
 crewforge5 is absent or a different version. The contract logic is **vendored**:
 copied into `scripts/vendor/` and pinned to one upstream commit.
@@ -49,7 +49,7 @@ deviation), so use `tail -n +10` for it; the only diff is the comment line above
 
 ## The adversarial-review stamp
 
-`gate.sh stamp` accepts and mad-dreamer emits the same stamp line upstream
+`gate.sh stamp` accepts and dreamer emits the same stamp line upstream
 writes, on the line directly under the plan's `#` title:
 
 ```
@@ -81,22 +81,22 @@ Three properties follow from copying the regex rather than re-deriving it:
 
 1. **`status` stays first.** The upstream pattern requires `status=` immediately
    after `adversarial-review: `, and a literal space immediately after the status
-   value. Any mad-dreamer extension must therefore be appended, never prepended.
+   value. Any dreamer extension must therefore be appended, never prepended.
 2. **Both upstream statuses pass.** `clean` and `user-override` are accepted here
    exactly as upstream accepts them; `gate.sh stamp` reports which one it found as
    `REVIEW_STATUS=`.
-3. **An upstream-stamped plan passes unmodified**, and a mad-dreamer-stamped plan
+3. **An upstream-stamped plan passes unmodified**, and a dreamer-stamped plan
    passes an upstream gate unmodified. The extension is additive by construction.
 
 ### The one permitted extension
 
 ```
-<!-- adversarial-review: status=clean rounds=2 date=2026-08-18 reviewer=mad-dreamer mode=mad-dreamer -->
+<!-- adversarial-review: status=clean rounds=2 date=2026-08-18 reviewer=dreamer mode=dreamer -->
 ```
 
-`mode=mad-dreamer` is the only field mad-dreamer adds. Upstream's regex ignores
+`mode=dreamer` is the only field dreamer adds. Upstream's regex ignores
 trailing fields, so the extended stamp still matches it byte-for-byte through the
-anchored prefix. `gate.sh stamp` reports `MODE=mad-dreamer` when present and
+anchored prefix. `gate.sh stamp` reports `MODE=dreamer` when present and
 `MODE=none` for an unextended upstream stamp, and **fails** on any other `mode=`
 value — an unrecognised mode means some third tool has claimed the same stamp,
 which is a contract collision, not a pass.
@@ -119,7 +119,7 @@ changed the contract, that test fails.
 
 **The vendor is pinned. Drift is informational. Re-vendoring is deliberate.**
 
-- The pinned copy is what runs. mad-dreamer's behaviour never changes because
+- The pinned copy is what runs. dreamer's behaviour never changes because
   someone upgraded, downgraded or removed their crewforge5 plugin.
 - A drift check — diffing `scripts/vendor/` against a newer upstream — is a
   **report, not a gate**. It never fails a build, never blocks a release, and is
@@ -145,5 +145,5 @@ document path. A vendored copy that still points home is not vendored.
    contract-identity proof tests the contract you actually adopted.
 4. Run `bats tests/` and `shellcheck scripts/*.sh scripts/vendor/*.sh`. Both must
    be green before the re-vendor lands.
-5. Bump mad-dreamer's version. A changed plan contract is a changed public
+5. Bump dreamer's version. A changed plan contract is a changed public
    interface, whatever the diff size says.

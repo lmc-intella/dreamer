@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# gate.sh — mad-dreamer quality gates.
+# gate.sh — dreamer quality gates.
 #
 #   gate.sh preflight [--allow-dirty]
 #   gate.sh plan-contract <plan.md>
@@ -18,7 +18,7 @@
 # the repository or any file named on the command line. `plan-contract` runs the
 # vendored build_graph.sh, which must write its graph somewhere: it is given a
 # private `mktemp -d` scratch directory outside the repo that is removed on exit.
-# `report` only reads `.mad-dreamer/state.json`.
+# `report` only reads `.dreamer/state.json`.
 #
 # Vendored dependencies live in scripts/vendor/ and are resolved relative to this
 # script's own directory — there is no runtime dependency on any upstream repo.
@@ -26,7 +26,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 VENDOR_DIR="$SCRIPT_DIR/vendor"
-STATE_FILE=".mad-dreamer/state.json"
+STATE_FILE=".dreamer/state.json"
 
 # The adversarial-review stamp grammar, byte-compatible with the upstream gate.
 # See docs/vendor-policy.md for the provenance of this regex — it must stay
@@ -60,7 +60,7 @@ usage: gate.sh <subcommand> [args]
   stamp <plan.md>                adversarial-review stamp present and clean
   findings <findings-file>       no CRITICAL/HIGH finding left open
   tests [--coverage <pct>]       repo-discovered test command (+ coverage floor)
-  report                         summarise .mad-dreamer/state.json
+  report                         summarise .dreamer/state.json
 USAGE
   exit 2
 }
@@ -148,7 +148,7 @@ cmd_plan_contract() {
   detail STORIES "$stories"
 
   rc=0
-  TS_WORKTREE_NAME="${TS_WORKTREE_NAME:-mad-dreamer}" \
+  TS_WORKTREE_NAME="${TS_WORKTREE_NAME:-dreamer}" \
     bash "$VENDOR_DIR/build_graph.sh" "$scratch/stories.json" "$scratch/graph.json" >/dev/null || rc=$?
   if [ "$rc" -ne 0 ]; then
     detail REASON graph-invalid
@@ -188,8 +188,8 @@ cmd_stamp() {
   detail ROUNDS "${rounds:-unknown}"
   detail MODE "${mode:-none}"
 
-  # The only permitted local extension to the upstream grammar is mode=mad-dreamer.
-  if [ -n "$mode" ] && [ "$mode" != mad-dreamer ]; then
+  # The only permitted local extension to the upstream grammar is mode=dreamer.
+  if [ -n "$mode" ] && [ "$mode" != dreamer ]; then
     detail REASON unknown-mode
     emit FAIL
   fi
