@@ -15,9 +15,10 @@ the plan path. `$COV` = the coverage floor (**60**). `$TARGET` = the landing
 branch (`main`). Flags come off the invocation, never a dialogue: `--coverage
 <pct>`, `--target <branch>`, `--merge` (default) lands, `--pr` opens a PR.
 
-**Budget: one agent spawn per story** — one combined security + correctness
-review, never a lens fleet. Every spawn is block-collect-close: spawn, wait,
-read the report, act, say what you did; an unread report did not run. **Never**
+**Budget: one dynamic `Workflow` run per story** (this instruction is the
+opt-in) — security + correctness reviewers plus adversarial verify in one
+workflow; no Workflow tool means one plain agent spawn. Block-collect-close:
+launch, wait, read, act, say what you did; an unread report did not run. **Never**
 force-push, rewrite history, or touch `$TARGET` without step 7's confirmation.
 
 ## Checklist
@@ -91,8 +92,10 @@ force-push, rewrite history, or touch `$TARGET` without step 7's confirmation.
    never a floor to lower — `$COV` is fixed at intake.
    `REASON=no-coverage-figure` means the test command prints no percentage: say
    so and re-run without `--coverage` rather than invent a number.
-3. **Review — one spawn, blocked on, collected, closed.** One agent, security
-   and correctness in one pass, over this story's diff only. It writes `FINDING
+3. **Review — one dynamic `Workflow` run, blocked on, collected, closed.**
+   Security + correctness reviewers over this story's diff only, each finding
+   adversarially verified inside the workflow before it counts (one plain agent
+   when the Workflow tool is absent). The run writes `FINDING
    id=<id> severity=<CRITICAL|HIGH|MEDIUM|LOW> status=<open|resolved>` lines to
    `$ART/findings-$SID.md`. Wait, read the report, then `bash
    "$MD/scripts/gate.sh" findings "$ART/findings-$SID.md"`. Fix every

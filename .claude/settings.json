@@ -1,0 +1,8 @@
+{
+  "enableWorkflows": true,
+  "disableWorkflows": false,
+  "workflowSizeGuideline": "unrestricted",
+  "env": {
+    "CLAUDE_CODE_DISABLE_WORKFLOWS": ""
+  }
+}

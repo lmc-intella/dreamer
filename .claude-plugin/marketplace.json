@@ -11,7 +11,7 @@
       "name": "dreamer",
       "description": "Three commands over one repo: /dreamer:init audits and slims your Claude config in one measured pass, /dreamer:plan turns a goal into a contract-valid stamped plan, and /dreamer:execute drives that plan to a merged commit with a TDD spine. Keeps the invariant gates, drops the process ceremony; the plan contract stays interoperable with crewforge5.",
       "source": "./",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "category": "development",
       "keywords": [
         "agents",

@@ -74,9 +74,13 @@ a test can fail on, never "handles X correctly".
 
 ## Step 3 — review + stamp
 
-Start `rounds=1` and run one adversarial pass over the draft — the
+Start `rounds=1` and run one adversarial pass over the draft **as a dynamic
+workflow** (the `Workflow` tool — this skill's instruction is your opt-in): one
+reviewer agent per lens in parallel — plan shape, grounding fidelity, AC
+testability — then an adversarial-verify stage that tries to refute each
+finding before it counts. With no Workflow tool, fall back to the
 `adversarial-review` skill when installed, else review it yourself against the
-plan shape, the grounding and the ACs' testability.
+same three lenses.
 
 - **CRITICAL/HIGH** — apply every one, `rounds++`, review again; loop only while
   CRITICAL or HIGH remain. At `rounds=3` STOP and hand over the open findings.
@@ -134,6 +138,8 @@ Name the repomix.sh pack + the ground.sh call.>
 - [ ] Decisions filtered — repo-answerable ones written to `## Assumptions`
 - [ ] Exactly one `AskUserQuestion` batch (≤4 questions), ≤1 push-back batch
 - [ ] Plan drafted in the shape above, filename carries a story id
+- [ ] Review ran as a dynamic `Workflow` (lens fan-out + adversarial verify),
+      or the named fallback when the tool is absent
 - [ ] CRITICAL/HIGH looped to zero (≤3 rounds); MEDIUM/LOW in `## Review notes`;
       no `<!-- FINDING` marker left
 - [ ] Stamped `mode=dreamer rounds=<N>`; `gate.sh plan-contract` and

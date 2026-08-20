@@ -8,7 +8,7 @@ The plan contract is part of the public interface: a change to the stamp grammar
 the story-heading shapes or the work-graph semantics is a version bump, whatever
 the diff size says.
 
-## [Unreleased]
+## [0.2.0] — 2026-08-21
 
 ### Added
 
@@ -29,6 +29,14 @@ the diff size says.
   before a line of code, check every story's `Touches` against the map, and read
   a story's files out of the pack at RED. The execute SKILL.md body budget moved
   from 120 to 130 lines to hold that phase.
+- **Dynamic workflows** — `/dreamer:plan`'s adversarial review and
+  `/dreamer:execute`'s per-story review now run as one dynamic `Workflow` each
+  (parallel reviewer lenses plus an adversarial-verify stage), falling back to
+  the previous single-pass review where the Workflow tool is unavailable.
+  `.claude/settings.json` pins workflows enabled for the repo
+  (`enableWorkflows`, `disableWorkflows: false`, `workflowSizeGuideline`) and
+  clears `CLAUDE_CODE_DISABLE_WORKFLOWS` so an inherited shell value cannot
+  switch them off.
 
 ## [0.1.0] — 2026-08-19
 
