@@ -8,6 +8,12 @@ The plan contract is part of the public interface: a change to the stamp grammar
 the story-heading shapes or the work-graph semantics is a version bump, whatever
 the diff size says.
 
+## [0.2.1] — 2026-08-21
+
+### Changed
+
+- Version-only re-release; no functional changes since 0.2.0.
+
 ## [0.2.0] — 2026-08-21
 
 ### Added
