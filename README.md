@@ -56,7 +56,7 @@ Check what landed, update it, or take it back out:
 
 ```sh
 claude plugin details dreamer          # 3 skills, 0 agents, 0 hooks, ~269 always-on tokens
-claude plugin marketplace update dreamer && claude plugin update dreamer
+claude plugin marketplace update dreamer && claude plugin update dreamer@dreamer
 claude plugin uninstall dreamer        # add --scope if you installed with one
 claude plugin marketplace remove dreamer
 ```
